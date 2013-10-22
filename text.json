@@ -1,0 +1,26 @@
+{	
+	"time": { 
+		"a": 0.1, 
+		"b": 0.12, 
+		"c": 0.05, 
+		"d": 0.15, 
+		"e": 0.2, 
+		"f": 0.1, 
+		"g": 0.25 
+	}
+	,
+	"orders": [
+	{"key":1, "a": 20, "d": 10, "f": 10, "deadline": 3 },
+	{"key":2,  "b": 40, "c": 20, "g": 10, "deadline": 6 },
+	{"key":6,  "a": 30, "d": 10, "g": 10, "deadline": 15 },
+	{"key":3,  "d": 20, "e": 25, "deadline": 9 },
+	{"key":4,  "a": 40, "c": 20, "f": 15, "deadline": 10 },
+	{"key":5,  "b": 20, "c": 10, "e": 10, "deadline": 13 }
+	],
+
+	"machines": [
+	{ "capacity": 8 },
+	{ "capacity": 8 },
+	{ "capacity": 8 }
+	]
+}
