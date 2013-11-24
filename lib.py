@@ -78,7 +78,7 @@ class Machine(object):
 			self.take(order[0], order[1])
 
 	def __repr__(self):
-		string= 'machine orders\n'
+		string= 'machine {0}\n'.format(self.id)
 		i=0
 		for dayOrders in self.orders:
 			i +=1
