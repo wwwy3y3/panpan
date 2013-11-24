@@ -19,8 +19,8 @@
 	],
 
 	"machines": [
-	{ "capacity": 8 },
-	{ "capacity": 8 },
-	{ "capacity": 8 }
+	{ "capacity": 8, "id": 1 },
+	{ "capacity": 8, "id": 2 },
+	{ "capacity": 8, "id": 3 }
 	]
 }

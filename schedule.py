@@ -10,7 +10,7 @@ data = json.load(json_data)
 json_data.close()
 
 # init what i need
-machines= [ Machine(item["capacity"]) for item in data["machines"] ]
+machines= [ Machine(item["capacity"],item["id"]) for item in data["machines"] ]
 times= data["time"]
 
 # overide orders, units to time
@@ -39,17 +39,26 @@ orders= [ Order(**order) for order in ori_orders ]
 #	if capacity is over
 #		leave it next day
 #	machine day++, cut the times pass in orders
-
+i=0
 while orderLeft(orders):
+	i +=1
+	#print 'day',i
 	orders= sorted(orders, key=lambda order: order.times/order.deadline, reverse= True)
+	#print orders
 	for machine in machines:
 		machine.start()
 
 	for order in orders:
-		for item in order.items:
+		if not capacityLeft(machines):
+				break
+		j=0
+		while j < len(order.items):
+			if not capacityLeft(machines):
+				break
+			#print 'in order{0}'.format(order)
 			minM= min(machines, key= lambda machine: machine.times)
-			minM.take(item, order)
-			order.items.remove(item)
+			minM.take(order.items.pop(), order)
+			#order.items.remove(item)
 
 	# end of day
 
