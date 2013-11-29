@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*- 
 import copy
 
 class Order(object):
 	"""the order"""
 	def __init__(self, **arg):
+                # items 訂單
 		self.items= []
+		# times 壘加起來的時間
 		self.times= 0
 		for key, val in arg.items():
 			if key == "deadline": # deadline, not items
@@ -36,14 +39,14 @@ class Machine(object):
 		if self.capacityLeft <= 0:
 			raise error("capacity over")
 
-		#print 'machine {0} take {1} in order{2}, origin capacity {3}'.format(self.id,item,order.key,self.capacityLeft)
+		print 'machine {0} take {1} in order{2}, origin capacity {3}'.format(self.id,item,order.key,self.capacityLeft)
 		# item= {a: 2}
 		item["key"]= order.key
 		
 		# add item in orders
 		# if not init a list yet, init one
 		if len(self.orders) <= self.day:
-			self.orders.append([])
+			self.orders.append([]) # 初始化
 
 		# if over capacity
 		for key,val in item.iteritems():
@@ -51,8 +54,9 @@ class Machine(object):
 				leftItem= copy.deepcopy(item)
 				item[key] = self.capacityLeft
 				leftItem[key] -= self.capacityLeft
-				self.leftOrders.append((leftItem, order)) # push to tomorrow's work
-				#print 'over capacity, so split item to {0}, {1}'.format(item,leftItem)
+				order.items.append(leftItem)
+				# self.leftOrders.append((leftItem, order)) # push to tomorrow's work
+				print 'over capacity, so split item to {0}, {1}'.format(item,leftItem)
 
 		# append
 		self.orders[self.day].append(item)
@@ -64,7 +68,7 @@ class Machine(object):
 				self.times += val
 				order.times -= val # order times need to be cut
 				self.capacityLeft -= val
-		#print 'machine {0}, capacity left {1}\n'.format(self.id,self.capacityLeft)
+		print 'machine {0}, capacity left {1}\n'.format(self.id,self.capacityLeft)
 
 	def shut(self):
 		self.day += 1
@@ -81,8 +85,10 @@ class Machine(object):
 		string= 'machine {0}\n'.format(self.id)
 		i=0
 		for dayOrders in self.orders:
+                        # 有幾天就print幾天的
 			i +=1
 			string += 'day'+ str(i) + '\n'
+			# print 這一天做過的order
 			for order in dayOrders:
 				orderStr= 'order key: {0}, item: {1}, time: {2}\n'
 				for key,val in order.iteritems():

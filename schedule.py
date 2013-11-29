@@ -1,10 +1,11 @@
 # input: 
 # read from json
 import json
+import os
 from lib import *
 from pprint import pprint
 
-json_data=open('text.json')
+json_data=open('text-too-big.json')
 data = json.load(json_data)
 #pprint(data)
 json_data.close()
@@ -71,7 +72,8 @@ while orderLeft(orders):
 pprint(machines)
 # check if okay
 	
-
+#os.system("pause")
+#raw_input("Press enter to continue")
 
 # output
 # listA: [[1,3], [3,5], [5,7]]
