@@ -5,7 +5,7 @@ import os
 from lib import *
 from pprint import pprint
 
-json_data=open('text-too-big.json')
+json_data=open('text.json')
 data = json.load(json_data)
 #pprint(data)
 json_data.close()
