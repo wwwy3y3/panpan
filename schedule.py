@@ -2,6 +2,7 @@
 # read from json
 import json
 import os
+import copy
 from lib import *
 from pprint import pprint
 
@@ -12,6 +13,7 @@ json_data.close()
 
 # init what i need
 machines= [ Machine(item["capacity"],item["id"]) for item in data["machines"] ]
+_machines= copy.deepcopy(machines)
 times= data["time"]
 
 # overide orders, units to time
@@ -29,6 +31,7 @@ for item in data["orders"]:
 
 # orders
 orders= [ Order(**order) for order in ori_orders ]
+_orders= copy.deepcopy(orders)
 # sort by times/deadline
 # orders= sorted(orders, key=lambda order: order.coef, reverse=True)
 # pprint(orders)
@@ -41,33 +44,59 @@ orders= [ Order(**order) for order in ori_orders ]
 #		leave it next day
 #	machine day++, cut the times pass in orders
 i=0
+iters=0
+iterFail= False
+done= False
+priority= {order.key: 1 for order in orders}
 while orderLeft(orders):
-	i +=1
-	#print 'day',i
-	orders= sorted(orders, key=lambda order: order.times/order.deadline, reverse= True)
-	#print orders
-	for machine in machines:
-		machine.start()
+	if iterFail:
+		iters +=1
+		print 'iter on',iters
+		orders= copy.deepcopy(_orders)
+		machines= copy.deepcopy(_machines)
+		for key,val in priority.iteritems():
+			orders[orders.index(key)].priority= val
+		iterFail= False
+		i=0
+	while orderLeft(orders):
+		i +=1
+		#print 'day',i
+		#for order in orders:
+		#	print 'order',order.key,' ',order.times/order.deadline*order.priority
+		orders= sorted(orders, key=lambda order: order.times/order.deadline*order.priority, reverse= True)
+		#for order in orders:
+			#print 'order',order.key,' ',order.times/order.deadline*order.priority
+		#print orders
+		for machine in machines:
+			machine.start()
 
-	for order in orders:
-		if not capacityLeft(machines):
-				break
-		j=0
-		while j < len(order.items):
+		for order in orders:
 			if not capacityLeft(machines):
 				break
-			#print 'in order{0}'.format(order)
-			minM= min(machines, key= lambda machine: machine.times)
-			minM.take(order.items.pop(), order)
-			#order.items.remove(item)
+			j=0
+			while j < len(order.items):
+				if not capacityLeft(machines):
+					break
+				#print 'in order{0}'.format(order)
+				minM= min(machines, key= lambda machine: machine.times)
+				minM.take(order.items.pop(), order)
+				#order.items.remove(item)
 
-	# end of day
+		# end of day
 
-	for order in orders:
-		order.deadline -= 1
+		for order in orders:
+			if len(order.items) >0:
+				order.deadline -= 1
+				if order.deadline == 0:
+					priority[order.key] *= 10
+					print 'multi 20 on ',order.key
+					iterFail= True
 
-	for machine in machines:
-		machine.shut()
+		if iterFail:
+			break
+
+		for machine in machines:
+			machine.shut()
 
 pprint(machines)
 # check if okay

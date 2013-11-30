@@ -8,6 +8,7 @@ class Order(object):
 		self.items= []
 		# times 壘加起來的時間
 		self.times= 0
+		self.priority= 1
 		for key, val in arg.items():
 			if key == "deadline": # deadline, not items
 				self.deadline= val
@@ -24,6 +25,9 @@ class Order(object):
 	def __repr__(self):
 		return repr((self.key, self.items, self.times/self.deadline))
 
+	def __eq__(self, key):
+		return self.key == key
+
 class Machine(object):
 	"""the machine"""
 	def __init__(self, capacity,id):
@@ -39,7 +43,7 @@ class Machine(object):
 		if self.capacityLeft <= 0:
 			raise error("capacity over")
 
-		print 'machine {0} take {1} in order{2}, origin capacity {3}'.format(self.id,item,order.key,self.capacityLeft)
+		#print 'machine {0} take {1} in order{2}, origin capacity {3}'.format(self.id,item,order.key,self.capacityLeft)
 		# item= {a: 2}
 		item["key"]= order.key
 		
@@ -56,7 +60,7 @@ class Machine(object):
 				leftItem[key] -= self.capacityLeft
 				order.items.append(leftItem)
 				# self.leftOrders.append((leftItem, order)) # push to tomorrow's work
-				print 'over capacity, so split item to {0}, {1}'.format(item,leftItem)
+				#print 'over capacity, so split item to {0}, {1}'.format(item,leftItem)
 
 		# append
 		self.orders[self.day].append(item)
@@ -68,7 +72,7 @@ class Machine(object):
 				self.times += val
 				order.times -= val # order times need to be cut
 				self.capacityLeft -= val
-		print 'machine {0}, capacity left {1}\n'.format(self.id,self.capacityLeft)
+		#print 'machine {0}, capacity left {1}\n'.format(self.id,self.capacityLeft)
 
 	def shut(self):
 		self.day += 1
